@@ -14,6 +14,31 @@ from .schema import TriageInput, VALID_AGE_BANDS, VALID_STATUSES, ADULT_BANDS
 _CHILD_CUES = re.compile(r"\b(child|baby|kid|girl|boy|infant|toddler|"
                          r"[1-9]\s*(?:-|to)?\s*1?[0-2]?\s*years?)\b", re.I)
 
+# Translates the team's 5-band vocabulary → our 7-band SLA vocabulary.
+# Called before any validation so preprocess never rejects a valid live report.
+_BAND_TRANSLATE = {
+    "child_0_5":  "0-12",
+    "child_6_12": "0-12",
+    "teen":       "13-17",
+    "adult":      "18-40",
+    "elderly":    "80+",
+}
+
+
+def _normalise_raw(raw: dict) -> dict:
+    """Translate field aliases from the Node.js backend schema → our schema."""
+    out = dict(raw)
+    # report_id → case_id
+    if "report_id" in out and "case_id" not in out:
+        out["case_id"] = out["report_id"]
+    # resolution_time_mins → mins_open (already in minutes)
+    if "resolution_time_mins" in out and "mins_open" not in out:
+        out["mins_open"] = out["resolution_time_mins"]
+    # 5-band → 7-band age vocabulary
+    if out.get("age_band") in _BAND_TRANSLATE:
+        out["age_band"] = _BAND_TRANSLATE[out["age_band"]]
+    return out
+
 
 def _as_float(v, default=None):
     try:
@@ -39,6 +64,7 @@ def _as_str(v):
 
 def to_triage_input(raw: dict) -> TriageInput:
     """Validate & normalize one case. Never raises — issues land in `warnings`."""
+    raw = _normalise_raw(raw)
     warnings: list[str] = []
 
     # --- age band ---------------------------------------------------------

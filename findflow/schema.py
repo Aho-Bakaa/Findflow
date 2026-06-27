@@ -10,7 +10,8 @@ from typing import List, Optional
 
 # Canonical vocabularies (anything outside these is flagged in preprocessing)
 VALID_AGE_BANDS = ("0-12", "13-17", "18-40", "41-60", "61-70", "71-80", "80+")
-VALID_STATUSES = ("Reunited", "Pending", "Unresolved", "Transferred to hospital", "open")
+VALID_STATUSES = ("Reunited", "Pending", "Unresolved", "Transferred to hospital",
+                  "open", "matched", "resolved")
 VALID_TIERS = ("OK", "WARN", "ESCALATE", "CRITICAL")
 VALID_SIGNAL_TYPES = ("alert", "prediction")
 

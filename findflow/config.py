@@ -22,12 +22,11 @@ def _load_dotenv(path: Path) -> None:
 
 _load_dotenv(ROOT / ".env")
 
-CASES_CSV       = DATA_DIR / "missing_persons.csv"
-ZONES_CSV       = DATA_DIR / "zones.csv"
-CAMERAS_CSV     = DATA_DIR / "cctv_locations.csv"
-CCTV_KML        = DATA_DIR / "cctv.kml"
-CHOKEPOINTS_KML = DATA_DIR / "chokepoints.kml"
-POLICE_KML      = DATA_DIR / "police_stations.kml"
+CASES_CSV       = DATA_DIR / "Synthetic_Missing_Persons_2500.csv"
+ZONES_CSV       = DATA_DIR / "Zone_Boundaries.csv"
+CAMERAS_CSV     = DATA_DIR / "CCTV_Locations.csv"
+CHOKEPOINTS_CSV = DATA_DIR / "Chokepoints_Parking.csv"
+POLICE_CSV      = DATA_DIR / "Police_Stations.csv"
 
 # ── Crowd movement model (dense Kumbh crowd) ──────────────────────────────────
 RESPONDER_SPEED_MPS = 0.7      # volunteer pushing through crowd
