@@ -7,100 +7,126 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-<!-- ElevenLabs Conversational AI SDK -->
-<script src="https://unpkg.com/@11labs/client@latest/dist/index.umd.js"></script>
+<script src="https://unpkg.com/@11labs/client@0.2.0/dist/lib.umd.js"></script>
 
 <script id="tailwind-config">
   tailwind.config = {
-    darkMode: "class",
-    theme: {
-      extend: {
-        colors: {
-          "primary-fixed-dim": "#ffb59a", "surface-container-lowest": "#ffffff",
-          "background": "#fafaf5", "outline-variant": "#e3bfb2",
-          "secondary": "#4c56af", "on-surface": "#1a1c19",
-          "primary-container": "#cd4700", "inverse-surface": "#2f312e",
-          "tertiary": "#73554e", "primary-fixed": "#ffdbcf",
-          "surface-container": "#eeeee9", "inverse-primary": "#ffb59a",
-          "surface-variant": "#e3e3de", "surface": "#fafaf5",
-          "primary": "#a43700", "on-surface-variant": "#5a4138",
-          "secondary-container": "#959efd", "on-primary": "#ffffff",
-          "on-secondary": "#ffffff", "outline": "#8f7066",
-          "error": "#ba1a1a", "on-background": "#1a1c19",
-          "surface-container-high": "#e8e8e3",
-          "surface-container-highest": "#e3e3de",
-          "surface-container-low": "#f4f4ef",
-          "inverse-on-surface": "#f1f1ec",
-        },
-        fontFamily: { sans: ["Noto Sans", "sans-serif"] },
-        fontSize: {
-          "label-lg": ["16px", { lineHeight: "24px", letterSpacing: "0.05em", fontWeight: "700" }],
-          "body-md":  ["18px", { lineHeight: "28px", fontWeight: "400" }],
-          "body-lg":  ["20px", { lineHeight: "30px", fontWeight: "400" }],
-          "title-md": ["24px", { lineHeight: "32px", fontWeight: "600" }],
-          "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "700" }],
-          "display-lg":  ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
-        },
-        spacing: {
-          "margin-mobile": "24px", "unit": "8px", "touch-target-min": "64px",
-        },
-        borderRadius: { lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+    darkMode:"class",
+    theme:{extend:{
+      colors:{
+        "primary-fixed-dim":"#ffb59a","surface-container-lowest":"#ffffff",
+        "background":"#fafaf5","outline-variant":"#e3bfb2",
+        "secondary":"#4c56af","on-surface":"#1a1c19",
+        "primary-container":"#cd4700","inverse-surface":"#2f312e",
+        "tertiary":"#73554e","primary-fixed":"#ffdbcf",
+        "surface-container":"#eeeee9","inverse-primary":"#ffb59a",
+        "surface-variant":"#e3e3de","surface":"#fafaf5",
+        "primary":"#a43700","on-surface-variant":"#5a4138",
+        "secondary-container":"#959efd","on-primary":"#ffffff",
+        "on-secondary":"#ffffff","outline":"#8f7066",
+        "error":"#ba1a1a","on-background":"#1a1c19",
+        "surface-container-high":"#e8e8e3",
+        "surface-container-highest":"#e3e3de",
+        "surface-container-low":"#f4f4ef",
+        "inverse-on-surface":"#f1f1ec",
       },
-    },
+      fontFamily:{sans:["Noto Sans","sans-serif"]},
+      fontSize:{
+        "label-lg":["16px",{lineHeight:"24px",letterSpacing:"0.05em",fontWeight:"700"}],
+        "body-md": ["18px",{lineHeight:"28px",fontWeight:"400"}],
+        "body-lg": ["20px",{lineHeight:"30px",fontWeight:"400"}],
+        "title-md":["24px",{lineHeight:"32px",fontWeight:"600"}],
+        "headline-lg":["32px",{lineHeight:"40px",fontWeight:"700"}],
+        "display-lg": ["48px",{lineHeight:"56px",letterSpacing:"-0.02em",fontWeight:"700"}],
+      },
+      spacing:{"margin-mobile":"24px","unit":"8px","touch-target-min":"64px"},
+      borderRadius:{lg:"0.5rem",xl:"0.75rem",full:"9999px"},
+    }},
   };
 </script>
 
 <style>
-  body { background: #fafaf5; color: #1a1c19; font-family: "Noto Sans", sans-serif; }
+  body{background:#fafaf5;color:#1a1c19;font-family:"Noto Sans",sans-serif;}
 
-  .screen { display: none; height: 100vh; width: 100vw; overflow: hidden; flex-direction: column; }
-  .screen.active { display: flex; }
+  /* ── Screens ── */
+  .screen{display:none;height:100vh;width:100vw;overflow:hidden;flex-direction:column;}
+  .screen.active{display:flex;}
 
-  /* Pulse halo for mic button */
-  .is-listening .halo { animation: pulse-halo 1.8s infinite ease-out; }
-  @keyframes pulse-halo {
-    0%   { transform: scale(1);   opacity: 0.5; }
-    50%  { transform: scale(1.5); opacity: 0.15; }
-    100% { transform: scale(1.8); opacity: 0; }
+  /* ── Welcome halo ── */
+  .is-listening .halo{animation:pulse-halo 1.8s infinite ease-out;}
+  @keyframes pulse-halo{
+    0%  {transform:scale(1);  opacity:.5;}
+    50% {transform:scale(1.5);opacity:.15;}
+    100%{transform:scale(1.8);opacity:0;}
   }
 
-  /* Ripple for conversation mic */
-  .listening-ripple { animation: ripple 2s infinite; }
-  @keyframes ripple {
-    0%   { transform: scale(1);   opacity: 0.4; }
-    100% { transform: scale(2.5); opacity: 0; }
+  /* ── Conversation ripple ── */
+  .listening-ripple{animation:ripple 2s infinite;}
+  @keyframes ripple{
+    0%  {transform:scale(1);  opacity:.4;}
+    100%{transform:scale(2.5);opacity:0;}
   }
 
-  /* Voice bars */
-  .voice-bar { transition: height 0.1s ease-in-out; }
+  /* ── Voice bars ── */
+  .voice-bar{transition:height .1s ease-in-out;}
 
-  /* Marquee */
-  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-  .animate-marquee { animation: marquee 18s linear infinite; }
+  /* ── Marquee ── */
+  @keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  .animate-marquee{animation:marquee 18s linear infinite;}
 
-  /* Fade mask on transcript scroll */
-  .scroll-mask {
-    mask-image: linear-gradient(to bottom, transparent, black 12%, black 88%, transparent);
+  /* ── Transcript fade mask ── */
+  .scroll-mask{mask-image:linear-gradient(to bottom,transparent,black 12%,black 88%,transparent);}
+
+  /* ── Summary pulse ── */
+  .listening-halo{animation:pulse-ring 2s cubic-bezier(.4,0,.6,1) infinite;}
+  @keyframes pulse-ring{
+    0%  {transform:scale(.95);opacity:.8;}
+    50% {transform:scale(1.05);opacity:.4;}
+    100%{transform:scale(.95);opacity:.8;}
   }
 
-  .material-symbols-outlined {
-    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 48;
+  .material-symbols-outlined{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 48;}
+
+  /* ── Camera overlay ── */
+  #camera-overlay{
+    position:fixed;inset:0;z-index:9999;
+    background:rgba(0,0,0,.92);
+    display:none;flex-direction:column;
+    align-items:center;justify-content:center;gap:24px;
+  }
+  #camera-overlay.open{display:flex;}
+
+  #cam-video{
+    width:min(520px,90vw);aspect-ratio:4/3;
+    border-radius:16px;object-fit:cover;
+    border:3px solid #4c56af;background:#111;
+    transform:scaleX(-1); /* mirror for self-report */
+  }
+  #cam-video.no-mirror{transform:scaleX(1);}
+
+  #cam-canvas{display:none;}
+
+  /* Countdown ring */
+  #cam-countdown{
+    position:absolute;
+    font-size:96px;font-weight:700;color:#fff;
+    opacity:0;transition:opacity .3s;pointer-events:none;
+    text-shadow:0 0 40px rgba(76,86,175,.8);
   }
 
-  /* Pulsing confirmation ring */
-  .listening-halo { animation: pulse-ring 2s cubic-bezier(0.4,0,0.6,1) infinite; }
-  @keyframes pulse-ring {
-    0%   { transform: scale(0.95); opacity: 0.8; }
-    50%  { transform: scale(1.05); opacity: 0.4; }
-    100% { transform: scale(0.95); opacity: 0.8; }
+  /* Capture flash */
+  #cam-flash{
+    position:fixed;inset:0;background:#fff;
+    opacity:0;pointer-events:none;z-index:10000;
+    transition:opacity .08s;
   }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════════
-     SCREEN 1 — Welcome / Push to Talk
-     ═══════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════
+     SCREEN 1 — Welcome / Push-to-Talk
+     ═══════════════════════════════════════════════ -->
 <div class="screen active" id="screen-welcome">
   <header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-background">
     <span class="material-symbols-outlined text-primary text-4xl">g_translate</span>
@@ -108,7 +134,6 @@
   </header>
 
   <main class="flex-grow flex flex-col items-center justify-center relative px-6 overflow-hidden">
-    <!-- Atmospheric circles -->
     <div class="absolute inset-0 z-0 pointer-events-none flex items-center justify-center">
       <div class="w-[700px] h-[700px] border border-primary/10 rounded-full"></div>
       <div class="absolute w-[500px] h-[500px] border border-primary/10 rounded-full"></div>
@@ -125,21 +150,21 @@
       <div class="w-full bg-primary py-2 overflow-hidden shadow-lg mb-6 rounded-lg">
         <div class="flex whitespace-nowrap animate-marquee">
           <p class="text-label-lg text-on-primary px-4">
-            यदि आप अपने समूह से बिछड़ गए हैं, तो बस यहाँ दबाएँ और बात करें। हम उन्हें ढूँढने में आपकी मदद करेंगे।&nbsp;&nbsp;&nbsp;&nbsp;
-            यदि आप अपने समूह से बिछड़ गए हैं, तो बस यहाँ दबाएँ और बात करें। हम उन्हें ढूँढने में आपकी मदद करेंगे।&nbsp;&nbsp;&nbsp;&nbsp;
+            यदि आप अपने समूह से बिछड़ गए हैं, तो बस यहाँ दबाएँ और बात करें।
+            हम उन्हें ढूँढने में आपकी मदद करेंगे।&nbsp;&nbsp;&nbsp;&nbsp;
+            यदि आप अपने समूह से बिछड़ गए हैं, तो बस यहाँ दबाएँ और बात करें।
+            हम उन्हें ढूँढने में आपकी मदद करेंगे।&nbsp;&nbsp;&nbsp;&nbsp;
           </p>
         </div>
       </div>
 
-      <!-- Mic button with halo -->
+      <!-- Mic button -->
       <div class="relative group" id="mic-container">
         <div class="halo absolute inset-0 bg-secondary rounded-full opacity-0" id="halo-1"></div>
-        <div class="halo absolute inset-0 bg-secondary rounded-full opacity-0" style="animation-delay:0.6s" id="halo-2"></div>
-        <button
-          id="btn-start"
+        <div class="halo absolute inset-0 bg-secondary rounded-full opacity-0" style="animation-delay:.6s" id="halo-2"></div>
+        <button id="btn-start"
           class="relative rounded-full bg-primary text-on-primary shadow-2xl flex items-center justify-center transition-all duration-300 active:scale-90 z-20 w-56 h-56"
-          aria-label="बोलने के लिए दबाएँ"
-        >
+          aria-label="बोलने के लिए दबाएँ">
           <span class="material-symbols-outlined text-8xl">settings_voice</span>
         </button>
         <div class="absolute -bottom-10 left-1/2 -translate-x-1/2 whitespace-nowrap text-label-lg text-primary opacity-0 group-hover:opacity-100 transition-opacity">
@@ -147,7 +172,7 @@
         </div>
       </div>
 
-      <!-- Waveform (hidden until active) -->
+      <!-- Waveform (visible while connecting) -->
       <div class="mt-16 flex items-end gap-1.5 h-10 opacity-0 transition-opacity duration-500" id="welcome-waveform">
         <div class="voice-bar w-2 bg-secondary rounded-full" style="height:8px"></div>
         <div class="voice-bar w-2 bg-secondary rounded-full" style="height:8px"></div>
@@ -160,9 +185,9 @@
   </main>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
+<!-- ═══════════════════════════════════════════════
      SCREEN 2 — Live Conversation
-     ═══════════════════════════════════════════════════════ -->
+     ═══════════════════════════════════════════════ -->
 <div class="screen" id="screen-conversation">
   <header class="fixed top-0 w-full z-50 bg-background flex justify-between items-center px-6 h-16">
     <div class="flex items-center gap-4">
@@ -176,14 +201,12 @@
 
   <main class="flex-grow pt-20 pb-52 px-6 flex flex-col max-w-4xl mx-auto w-full">
     <div class="flex-grow overflow-y-auto scroll-mask space-y-6 pr-2" id="transcript-container">
-      <!-- Messages injected here by JS -->
       <div class="h-4"></div>
     </div>
   </main>
 
   <!-- Bottom voice panel -->
   <div class="fixed bottom-0 left-0 w-full z-50 bg-surface-container p-8 flex flex-col items-center gap-4 rounded-t-[32px] shadow-2xl">
-    <!-- Waveform -->
     <div class="flex items-end gap-1 h-10" id="conv-waveform">
       <div class="voice-bar w-1.5 bg-secondary rounded-full" style="height:36%"></div>
       <div class="voice-bar w-1.5 bg-secondary rounded-full" style="height:31%"></div>
@@ -202,9 +225,9 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
+<!-- ═══════════════════════════════════════════════
      SCREEN 3 — Registration Summary
-     ═══════════════════════════════════════════════════════ -->
+     ═══════════════════════════════════════════════ -->
 <div class="screen" id="screen-summary">
   <header class="fixed top-0 w-full z-50 bg-background flex justify-between items-center px-6 h-16">
     <div class="flex items-center gap-2">
@@ -217,7 +240,6 @@
   </header>
 
   <main class="mt-20 mb-10 w-full max-w-md mx-auto px-6 flex flex-col items-center">
-    <!-- Success header -->
     <div class="text-center mb-6">
       <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-secondary-container mb-2 shadow-sm listening-halo">
         <span class="material-symbols-outlined text-on-secondary text-3xl">check_circle</span>
@@ -226,11 +248,12 @@
       <p class="text-body-md text-tertiary">विवरण दर्ज किया गया। सहायता रास्ते में है।</p>
     </div>
 
-    <!-- Summary card -->
     <div class="w-full bg-surface-container-lowest rounded-xl border border-outline/10 p-4 shadow-sm mb-6">
       <div class="flex items-center gap-4 mb-4 border-b border-outline/5 pb-4">
-        <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 border border-outline/10 bg-surface-container flex items-center justify-center" id="summary-photo-container">
-          <span class="material-symbols-outlined text-4xl text-outline">person</span>
+        <!-- Photo thumbnail -->
+        <div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 border border-outline/10 bg-surface-container flex items-center justify-center" id="summary-photo-wrap">
+          <span class="material-symbols-outlined text-4xl text-outline" id="summary-photo-icon">person</span>
+          <img id="summary-photo-img" class="w-full h-full object-cover hidden" alt="Captured photo"/>
         </div>
         <div class="flex-grow">
           <span class="text-xs text-tertiary uppercase tracking-wider">नाम</span>
@@ -244,7 +267,7 @@
           <p class="text-body-md text-on-surface" id="summary-age-gender">—</p>
         </div>
         <div class="flex flex-col">
-          <span class="text-xs text-tertiary">प्राथमिक भाषा</span>
+          <span class="text-xs text-tertiary">भाषा</span>
           <p class="text-body-md text-on-surface" id="summary-language">—</p>
         </div>
         <div class="col-span-2 flex flex-col">
@@ -255,15 +278,13 @@
           <span class="text-xs text-tertiary">विवरण</span>
           <p class="text-body-md text-on-surface" id="summary-description">—</p>
         </div>
-        <!-- Triage signal badge -->
-        <div class="col-span-2 flex flex-col" id="summary-signal-row" style="display:none!important">
+        <div class="col-span-2 flex-col hidden" id="summary-signal-row">
           <span class="text-xs text-tertiary">प्राथमिकता</span>
           <span class="inline-flex items-center gap-1 mt-1 px-3 py-1 rounded-full text-label-lg w-fit" id="summary-signal-badge">—</span>
         </div>
       </div>
     </div>
 
-    <!-- Actions -->
     <div class="w-full flex flex-col gap-3">
       <button id="btn-led" class="w-full h-20 bg-primary text-white rounded-xl shadow-lg active:scale-95 transition-all flex flex-col items-center justify-center">
         <div class="flex items-center gap-2">
@@ -279,20 +300,69 @@
   </main>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════
-     JavaScript — ElevenLabs + backend wiring
-     ═══════════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════════════════════════
+     CAMERA OVERLAY — shared by Flow A & B
+     ═══════════════════════════════════════════════ -->
+<div id="camera-overlay">
+  <!-- Instruction header -->
+  <div class="text-center px-6">
+    <p class="text-label-lg text-secondary uppercase tracking-widest mb-1" id="cam-flow-label">PHOTO REQUIRED</p>
+    <p class="text-headline-lg font-bold text-white" id="cam-instruction">Loading camera…</p>
+    <p class="text-body-md text-white/60 mt-1" id="cam-sub">कैमरा तैयार हो रहा है…</p>
+  </div>
+
+  <!-- Video preview -->
+  <div class="relative">
+    <video id="cam-video" autoplay playsinline muted></video>
+    <canvas id="cam-canvas"></canvas>
+    <!-- Countdown overlay -->
+    <div id="cam-countdown" class="absolute inset-0 flex items-center justify-center text-[96px] font-bold text-white pointer-events-none" style="opacity:0"></div>
+  </div>
+
+  <!-- Status / error row -->
+  <p class="text-body-md text-white/70 text-center min-h-[28px]" id="cam-status-text"></p>
+
+  <!-- Action buttons -->
+  <div class="flex gap-4">
+    <button id="cam-btn-capture"
+      class="px-8 py-4 bg-secondary text-white rounded-full text-label-lg shadow-lg active:scale-95 transition-all flex items-center gap-2">
+      <span class="material-symbols-outlined">camera</span>
+      फ़ोटो लें
+    </button>
+    <button id="cam-btn-retry"
+      class="px-6 py-4 border border-white/30 text-white rounded-full text-label-lg active:scale-95 transition-all hidden flex items-center gap-2">
+      <span class="material-symbols-outlined">refresh</span>
+      फिर से
+    </button>
+    <button id="cam-btn-skip"
+      class="px-6 py-4 border border-white/20 text-white/50 rounded-full text-label-lg active:scale-95 transition-all flex items-center gap-2">
+      <span class="material-symbols-outlined">skip_next</span>
+      छोड़ें
+    </button>
+  </div>
+</div>
+
+<!-- Capture flash effect -->
+<div id="cam-flash"></div>
+
+<!-- ═══════════════════════════════════════════════
+     JAVASCRIPT
+     ═══════════════════════════════════════════════ -->
 <script>
 // ── Config ────────────────────────────────────────────────────────────────────
 const ELEVENLABS_AGENT_ID = 'agent_1101kw43fhmafg7s5n8554ctygc9';
-const BACKEND_URL         = 'http://localhost:3001'; // Node.js backend
+const ELEVENLABS_API_KEY  = 'sk_b39c2df579d43a119bd5f7284edd6341fbfc25416c4e4e15';
+const BACKEND_URL         = 'http://localhost:3001';
 const REPORTING_CENTER    = 'KIOSK_001';
 const OPERATOR_ID         = 'KIOSK_AUTO';
+const JPEG_QUALITY        = 0.72;
 
 // ── State ─────────────────────────────────────────────────────────────────────
-let conversation  = null;
-let reportData    = {};
-let waveInterval  = null;
+let conversation = null;
+let reportData   = {};          // accumulates across the whole session
+let waveInterval = null;
+let camStream    = null;        // active MediaStream, if any
+let camResolve   = null;        // resolves the Promise returned to the agent tool
 
 // ── Screen routing ────────────────────────────────────────────────────────────
 function showScreen(id) {
@@ -300,7 +370,7 @@ function showScreen(id) {
   document.getElementById(id).classList.add('active');
 }
 
-// ── Waveform animation ────────────────────────────────────────────────────────
+// ── Waveform ──────────────────────────────────────────────────────────────────
 function startWaveform(containerId) {
   stopWaveform();
   const bars = document.querySelectorAll(`#${containerId} .voice-bar`);
@@ -308,19 +378,17 @@ function startWaveform(containerId) {
     bars.forEach(b => { b.style.height = `${Math.floor(Math.random() * 80) + 20}%`; });
   }, 120);
 }
+function stopWaveform() { clearInterval(waveInterval); waveInterval = null; }
 
-function stopWaveform() {
-  clearInterval(waveInterval);
-  waveInterval = null;
-}
+// ── Transcript ────────────────────────────────────────────────────────────────
+let liveBubble = null;
 
-// ── Transcript rendering ──────────────────────────────────────────────────────
 function appendMessage(role, text) {
   const container = document.getElementById('transcript-container');
   const isAgent   = role === 'agent';
 
-  const wrapper = document.createElement('div');
-  wrapper.className = `flex flex-col ${isAgent ? 'items-start' : 'items-end'}`;
+  const wrap  = document.createElement('div');
+  wrap.className = `flex flex-col ${isAgent ? 'items-start' : 'items-end'}`;
 
   const label = document.createElement('span');
   label.className = 'text-label-lg text-on-surface-variant mb-2';
@@ -336,22 +404,18 @@ function appendMessage(role, text) {
   para.textContent = text;
 
   bubble.appendChild(para);
-  wrapper.appendChild(label);
-  wrapper.appendChild(bubble);
-  container.appendChild(wrapper);
-
+  wrap.appendChild(label);
+  wrap.appendChild(bubble);
+  container.appendChild(wrap);
   container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
-  return para; // return for live update of last message
 }
 
-// Live "Listening…" bubble that updates in place
-let liveBubble = null;
 function setLiveBubble(text) {
   if (!liveBubble) {
     const container = document.getElementById('transcript-container');
-    const wrapper = document.createElement('div');
-    wrapper.className = 'flex flex-col items-end';
-    wrapper.id = 'live-bubble-wrapper';
+    const wrap = document.createElement('div');
+    wrap.id = 'live-bubble-wrap';
+    wrap.className = 'flex flex-col items-end';
 
     const label = document.createElement('span');
     label.className = 'text-label-lg text-on-surface-variant mb-2 italic';
@@ -364,51 +428,280 @@ function setLiveBubble(text) {
     liveBubble.className = 'text-body-lg italic text-secondary';
 
     bubble.appendChild(liveBubble);
-    wrapper.appendChild(label);
-    wrapper.appendChild(bubble);
-    container.appendChild(wrapper);
+    wrap.appendChild(label);
+    wrap.appendChild(bubble);
+    container.appendChild(wrap);
   }
   liveBubble.textContent = text;
-  const container = document.getElementById('transcript-container');
-  container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+  document.getElementById('transcript-container')
+    .scrollTo({ top: document.getElementById('transcript-container').scrollHeight, behavior: 'smooth' });
 }
 
 function commitLiveBubble() {
-  const wrapper = document.getElementById('live-bubble-wrapper');
-  if (wrapper) wrapper.remove();
+  document.getElementById('live-bubble-wrap')?.remove();
   liveBubble = null;
 }
 
-// ── ElevenLabs Conversation ───────────────────────────────────────────────────
+// ── System message in transcript (for photo events) ───────────────────────────
+function appendSystemMessage(icon, text) {
+  const container = document.getElementById('transcript-container');
+  const row = document.createElement('div');
+  row.className = 'flex items-center justify-center gap-2 py-2';
+  row.innerHTML = `
+    <span class="material-symbols-outlined text-secondary text-xl">${icon}</span>
+    <span class="text-label-lg text-secondary">${text}</span>`;
+  container.appendChild(row);
+  container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// CAMERA MODULE
+// ══════════════════════════════════════════════════════════════════════════════
+
+const overlay      = document.getElementById('camera-overlay');
+const video        = document.getElementById('cam-video');
+const canvas       = document.getElementById('cam-canvas');
+const countdownEl  = document.getElementById('cam-countdown');
+const flashEl      = document.getElementById('cam-flash');
+const btnCapture   = document.getElementById('cam-btn-capture');
+const btnRetry     = document.getElementById('cam-btn-retry');
+const btnSkip      = document.getElementById('cam-btn-skip');
+const statusText   = document.getElementById('cam-status-text');
+const instruction  = document.getElementById('cam-instruction');
+const subText      = document.getElementById('cam-sub');
+const flowLabel    = document.getElementById('cam-flow-label');
+
+function setCamStatus(msg) { statusText.textContent = msg; }
+
+// Stop any active camera stream
+function stopCamera() {
+  if (camStream) {
+    camStream.getTracks().forEach(t => t.stop());
+    camStream = null;
+  }
+  video.srcObject = null;
+}
+
+// Open camera and show overlay.
+// mode: "missing_person" | "self_report"
+// Returns a Promise that resolves with { photo_data: <base64 dataURL> | null }
+function openCamera(mode) {
+  return new Promise(async (resolve) => {
+    camResolve = resolve;
+
+    // Configure UI text per flow
+    if (mode === 'self_report') {
+      flowLabel.textContent   = 'FLOW B — SELF REPORT';
+      instruction.textContent = 'Please look at the camera.';
+      subText.textContent     = 'कैमरे की तरफ देखें।';
+      video.classList.remove('no-mirror');   // mirror for selfie
+    } else {
+      flowLabel.textContent   = 'FLOW A — MISSING PERSON PHOTO';
+      instruction.textContent = 'Please show the missing person\'s photo to the camera.';
+      subText.textContent     = 'लापता व्यक्ति की फ़ोटो कैमरे के सामने दिखाएँ।';
+      video.classList.add('no-mirror');      // no mirror for holding up a photo
+    }
+
+    setCamStatus('');
+    btnCapture.classList.remove('hidden');
+    btnRetry.classList.add('hidden');
+    overlay.classList.add('open');
+
+    // Request camera
+    try {
+      camStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 1280 }, height: { ideal: 960 } },
+        audio: false,
+      });
+      video.srcObject = camStream;
+      await video.play();
+      setCamStatus('');
+    } catch (err) {
+      handleCameraError(err);
+    }
+  });
+}
+
+function handleCameraError(err) {
+  stopCamera();
+  btnCapture.classList.add('hidden');
+  btnRetry.classList.remove('hidden');
+
+  if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+    setCamStatus('❌ कैमरा अनुमति नहीं मिली। कृपया ब्राउज़र सेटिंग में अनुमति दें।');
+  } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+    setCamStatus('❌ कैमरा उपलब्ध नहीं है। किसी अन्य डिवाइस से प्रयास करें।');
+  } else {
+    setCamStatus(`❌ कैमरा त्रुटि: ${err.message}`);
+  }
+}
+
+// Countdown 3-2-1 then capture
+async function doCountdownCapture() {
+  btnCapture.classList.add('hidden');
+  btnSkip.classList.add('hidden');
+
+  for (let n = 3; n >= 1; n--) {
+    countdownEl.textContent = n;
+    countdownEl.style.opacity = '1';
+    await sleep(900);
+    countdownEl.style.opacity = '0';
+    await sleep(100);
+  }
+
+  captureFrame();
+}
+
+function captureFrame() {
+  if (!camStream) return;
+
+  // Draw video frame to canvas
+  canvas.width  = video.videoWidth  || 1280;
+  canvas.height = video.videoHeight || 960;
+  const ctx = canvas.getContext('2d');
+
+  // Un-mirror the canvas capture even if video is mirrored
+  if (!video.classList.contains('no-mirror')) {
+    ctx.translate(canvas.width, 0);
+    ctx.scale(-1, 1);
+  }
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+  // Flash effect
+  flashEl.style.opacity = '1';
+  setTimeout(() => { flashEl.style.opacity = '0'; }, 120);
+
+  // Compress to JPEG
+  const dataURL = canvas.toDataURL('image/jpeg', JPEG_QUALITY);
+
+  setCamStatus('✓ फ़ोटो कैप्चर हो गई।');
+  btnRetry.classList.remove('hidden');
+  btnCapture.classList.add('hidden');
+
+  // Store in state
+  reportData.photo_data = dataURL;
+
+  // Auto-close after brief pause and resolve
+  setTimeout(() => {
+    stopCamera();
+    overlay.classList.remove('open');
+    if (camResolve) { camResolve({ photo_data: dataURL }); camResolve = null; }
+  }, 1200);
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Button handlers
+btnCapture.addEventListener('click', doCountdownCapture);
+
+btnRetry.addEventListener('click', async () => {
+  btnRetry.classList.add('hidden');
+  setCamStatus('');
+  if (!camStream) {
+    // Re-request camera after permission denial
+    try {
+      camStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+      video.srcObject = camStream;
+      await video.play();
+      btnCapture.classList.remove('hidden');
+    } catch (err) { handleCameraError(err); }
+  } else {
+    btnCapture.classList.remove('hidden');
+  }
+});
+
+btnSkip.addEventListener('click', () => {
+  stopCamera();
+  overlay.classList.remove('open');
+  if (camResolve) { camResolve({ photo_data: null }); camResolve = null; }
+});
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ELEVENLABS SESSION
+// ══════════════════════════════════════════════════════════════════════════════
+
 async function startConversation() {
-  // Request mic permission first
   try {
     await navigator.mediaDevices.getUserMedia({ audio: true });
-  } catch (e) {
+  } catch {
     alert('माइक्रोफ़ोन की अनुमति चाहिए। कृपया अनुमति दें।');
     return;
   }
 
-  // Animate welcome screen
   document.getElementById('mic-container').classList.add('is-listening');
   document.getElementById('welcome-waveform').classList.remove('opacity-0');
   startWaveform('welcome-waveform');
 
-  // Transition to conversation screen after a short delay
   setTimeout(() => showScreen('screen-conversation'), 800);
   startWaveform('conv-waveform');
 
-  const { Conversation } = ElevenLabs;
+  // @11labs/client UMD bundle registers itself as window.client
+  const ConvAI = window.client
+               || window.ElevenLabsConvai
+               || window.ElevenLabs;
+  const Conversation = ConvAI && (ConvAI.Conversation || ConvAI.default?.Conversation);
+  if (!Conversation) {
+    const found = Object.keys(window).filter(k => /eleven|convai|11labs|client/i.test(k));
+    console.error('SDK globals:', found, window.client);
+    alert('ElevenLabs SDK not found. Check console (F12) for details.');
+    return;
+  }
+
+  // Try signed URL first (works for private agents); fall back to agentId for public agents
+  let sessionParams = { agentId: ELEVENLABS_AGENT_ID };
+  try {
+    const sigResp = await fetch(
+      `https://api.elevenlabs.io/v1/convai/conversation/get_signed_url?agent_id=${ELEVENLABS_AGENT_ID}`,
+      { headers: { 'xi-api-key': ELEVENLABS_API_KEY } }
+    );
+    if (sigResp.ok) {
+      const data = await sigResp.json();
+      if (data.signed_url) sessionParams = { signedUrl: data.signed_url };
+    }
+  } catch (e) {
+    console.warn('Signed URL fetch failed, using agentId directly:', e.message);
+  }
 
   try {
     conversation = await Conversation.startSession({
-      agentId: ELEVENLABS_AGENT_ID,
+      ...sessionParams,
 
-      // Client-side tool: agent calls this when it has collected all report data
       clientTools: {
+
+        // ── Flow A: agent asks for photo of missing person ──────────────────
+        capture_missing_person_photo: async () => {
+          // Pause agent audio while camera is open
+          appendSystemMessage('photo_camera', 'Opening camera for missing person photo…');
+          const result = await openCamera('missing_person');
+
+          if (result.photo_data) {
+            appendSystemMessage('check_circle', 'Photo captured successfully.');
+            return 'Photo of missing person captured and stored. Continue the conversation.';
+          } else {
+            appendSystemMessage('cancel', 'Photo skipped by operator.');
+            return 'Photo was skipped. Continue without photo.';
+          }
+        },
+
+        // ── Flow B: agent detects lost self-report ──────────────────────────
+        capture_self_photo: async () => {
+          appendSystemMessage('person', 'Opening camera for self-identification…');
+          const result = await openCamera('self_report');
+
+          if (result.photo_data) {
+            reportData.case_type = 'lost_self_report';
+            appendSystemMessage('check_circle', 'Your photo has been captured for identification.');
+            return 'Self photo captured. The person at the booth has been photographed for identification. Continue.';
+          } else {
+            appendSystemMessage('cancel', 'Photo skipped.');
+            return 'Photo was skipped. Continue without photo.';
+          }
+        },
+
+        // ── Submit: agent calls this when all data is gathered ──────────────
         submit_report: async (params) => {
           await handleReportSubmission(params);
-          return 'Report submitted successfully. Thank you.';
+          return 'Report submitted successfully. The family will be notified.';
         },
       },
 
@@ -419,7 +712,6 @@ async function startConversation() {
       onDisconnect: () => {
         stopWaveform();
         document.getElementById('conv-status').textContent = 'Ended';
-        // If agent ended without calling submit_report, use what we have
         if (!reportData.submitted) finalizeWithTranscript();
       },
 
@@ -439,55 +731,51 @@ async function startConversation() {
         }
       },
 
-      onError: (error) => {
-        console.error('ElevenLabs error:', error);
-        document.getElementById('conv-status').textContent = 'Error — retrying…';
+      onError: (err) => {
+        console.error('ElevenLabs error:', err);
+        document.getElementById('conv-status').textContent = 'Connection error…';
       },
     });
   } catch (err) {
-    console.error('Failed to start conversation:', err);
+    console.error('Failed to start session:', err);
     document.getElementById('conv-status').textContent = 'Connection failed';
   }
 }
 
 async function endConversation() {
   if (conversation) {
-    await conversation.endSession();
+    try { await conversation.endSession(); } catch {}
     conversation = null;
   }
+  stopCamera();
+  overlay.classList.remove('open');
 }
 
 // ── Report submission ─────────────────────────────────────────────────────────
 async function handleReportSubmission(params) {
-  /*
-    params expected from the ElevenLabs agent tool call:
-    {
-      name, age_band, gender, language,
-      last_seen_location, physical_description,
-      reporter_mobile (optional)
-    }
-  */
-  reportData = { ...params, submitted: true };
+  reportData = { ...reportData, ...params, submitted: true };
 
   const payload = {
-    report_type:          'missing',
+    report_type:          reportData.case_type === 'lost_self_report'
+                            ? 'found_unaccompanied' : 'missing',
     reporting_center:     REPORTING_CENTER,
     operator_id:          OPERATOR_ID,
-    name:                 params.name         || null,
-    gender:               params.gender       || 'unknown',
-    age_band:             params.age_band     || 'adult',
-    language:             params.language     || 'Hindi',
+    name:                 params.name                 || null,
+    gender:               params.gender               || 'unknown',
+    age_band:             params.age_band             || 'adult',
+    language:             params.language             || 'Hindi',
     physical_description: params.physical_description || '',
     last_seen_location:   params.last_seen_location   || REPORTING_CENTER,
     reporter_mobile:      params.reporter_mobile       || null,
+    photo_data:           reportData.photo_data        || null,
     status:               'open',
   };
 
-  let savedReport = null;
+  let savedReport  = null;
   let triageSignal = null;
 
   try {
-    const res = await fetch(`${BACKEND_URL}/api/reports`, {
+    const res  = await fetch(`${BACKEND_URL}/api/reports`, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(payload),
@@ -503,7 +791,7 @@ async function handleReportSubmission(params) {
   showSummary(payload, savedReport, triageSignal);
 }
 
-// Fallback: agent ended conversation without calling submit_report
+// Fallback: agent disconnected without calling submit_report
 function finalizeWithTranscript() {
   if (reportData.submitted) return;
   showSummary({ name: null, gender: 'unknown', language: 'Hindi' }, null, null);
@@ -511,35 +799,38 @@ function finalizeWithTranscript() {
 
 // ── Summary screen ────────────────────────────────────────────────────────────
 function showSummary(payload, savedReport, triageSignal) {
-  // Populate fields
   document.getElementById('summary-name').textContent =
     payload.name || '(नाम अज्ञात)';
-
   document.getElementById('summary-id').textContent =
     savedReport ? `ID: ${savedReport.id}` : 'ID: —';
-
   document.getElementById('summary-age-gender').textContent =
     `${ageBandLabel(payload.age_band)} • ${genderLabel(payload.gender)}`;
-
   document.getElementById('summary-language').textContent =
     payload.language || '—';
-
   document.getElementById('summary-location').textContent =
     payload.last_seen_location || '—';
-
   document.getElementById('summary-description').textContent =
     payload.physical_description || '—';
+
+  // Show captured photo thumbnail
+  if (reportData.photo_data) {
+    const img  = document.getElementById('summary-photo-img');
+    const icon = document.getElementById('summary-photo-icon');
+    img.src    = reportData.photo_data;
+    img.classList.remove('hidden');
+    icon.classList.add('hidden');
+  }
 
   // Triage signal badge
   if (triageSignal) {
     const row   = document.getElementById('summary-signal-row');
     const badge = document.getElementById('summary-signal-badge');
-    row.style.display = '';
+    row.classList.remove('hidden');
     const colors = {
-      OK:        'bg-green-100 text-green-800',
-      WARN:      'bg-yellow-100 text-yellow-800',
-      ESCALATE:  'bg-orange-100 text-orange-800',
-      CRITICAL:  'bg-red-100 text-red-800',
+      OK:       'bg-green-100 text-green-800',
+      WARN:     'bg-yellow-100 text-yellow-800',
+      ESCALATE: 'bg-orange-100 text-orange-800',
+      CRITICAL: 'bg-red-100 text-red-800',
     };
     badge.className = `inline-flex items-center gap-1 mt-1 px-3 py-1 rounded-full text-label-lg w-fit ${colors[triageSignal.severity] || ''}`;
     badge.textContent = `${triageSignal.severity} — ${triageSignal.description.split('\n')[0]}`;
@@ -548,23 +839,26 @@ function showSummary(payload, savedReport, triageSignal) {
   showScreen('screen-summary');
 }
 
-function ageBandLabel(band) {
-  const map = {
-    'child_0_5': '0-5 वर्ष', 'child_6_12': '6-12 वर्ष',
-    'teen': '13-17 वर्ष', 'adult': '18-60 वर्ष', 'elderly': '60+ वर्ष',
-    '0-12': '0-12 वर्ष', '13-17': '13-17 वर्ष',
-    '18-40': '18-40 वर्ष', '41-60': '41-60 वर्ष',
-    '61-70': '61-70 वर्ष', '71-80': '71-80 वर्ष', '80+': '80+ वर्ष',
-  };
-  return map[band] || band || '—';
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function ageBandLabel(b) {
+  return ({
+    child_0_5:'0-5 वर्ष', child_6_12:'6-12 वर्ष',
+    teen:'13-17 वर्ष', adult:'18-60 वर्ष', elderly:'60+ वर्ष',
+    '0-12':'0-12 वर्ष','13-17':'13-17 वर्ष','18-40':'18-40 वर्ष',
+    '41-60':'41-60 वर्ष','61-70':'61-70 वर्ष',
+    '71-80':'71-80 वर्ष','80+':'80+ वर्ष',
+  })[b] || b || '—';
 }
-
 function genderLabel(g) {
-  return { male: 'पुरुष', female: 'महिला', unknown: 'अज्ञात' }[g] || g || '—';
+  return ({ male:'पुरुष', female:'महिला', unknown:'अज्ञात' })[g] || g || '—';
 }
 
 // ── Event wiring ──────────────────────────────────────────────────────────────
 document.getElementById('btn-start').addEventListener('click', startConversation);
+document.getElementById('btn-start').addEventListener('touchstart', e => {
+  e.preventDefault(); startConversation();
+}, { passive: false });
+
 document.getElementById('btn-end').addEventListener('click', async () => {
   await endConversation();
   showScreen('screen-welcome');
@@ -584,16 +878,8 @@ document.getElementById('btn-new').addEventListener('click', () => {
 });
 
 document.getElementById('btn-led').addEventListener('click', () => {
-  // Placeholder — integrate with PA/LED controller API when available
   alert('LED डिस्प्ले पर भेज दिया गया। ✓');
 });
-
-// Touch support for welcome mic
-document.getElementById('btn-start').addEventListener('touchstart', (e) => {
-  e.preventDefault();
-  startConversation();
-}, { passive: false });
 </script>
-
 </body>
 </html>
