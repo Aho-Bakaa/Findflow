@@ -1,202 +1,209 @@
-# FindFlow
+# FindFlow — Lost Person System, Nashik Kumbh Mela 2027
 
-Lost-person detection, coordination & dispatch for the **Nashik Kumbh Mela 2027**
-(80M+ pilgrims). Connects a separated person — most often a child or an elder who
-cannot ask for help — with the nearest booth / volunteer / police, and stops cases
-from rotting unseen across isolated reporting centers.
+Real-time detection, coordination, and dispatch for separated persons across 80M+ pilgrims. A separated child or elder is located, matched, and reunited — without relying on anyone to walk to the right booth or make a phone call.
 
-## The five capabilities
+---
 
-| # | Capability | 
-|---|------------|
-| 1 | STT + multilingual intake (structured follow-ups) |
-| 2 | Shared booth data pool (one fabric, all centers) | 
-| 3 | Matching + verification (entity resolution, handover gate) |
-| 4 | **Long-missing alerting** (vulnerability SLA + LLM escalation) |
-| 5 | **Predictive alarm** (hotspot risk + volunteer pre-positioning) |
+## Branches
 
-Acceptance criteria for #1–3 are in `docs/` (the team builds, we verify).
-This repo implements **#4 and #5**.
+| Branch | Contents | Who owns it |
+|--------|----------|-------------|
+| `master` | Merged codebase — Node.js backend + Python engine together | Both |
+| `python-engine` | Python AI engine, FastAPI sidecar, kiosk frontend | This team (Anmol) |
+| `nodejs-backend` | Express/SQLite backend, matching engine, WebSocket broadcast | Rohit's team |
+
+**If you're running the full system:** clone `master`.  
+**If you're working on the AI/kiosk layer only:** use `python-engine`.
+
+---
+
+## What it does
+
+Five capabilities, split across two codebases:
+
+| # | Capability | Where |
+|---|-----------|-------|
+| 1 | Voice intake — multilingual STT via ElevenLabs agent, structured follow-up, camera capture | `frontend/kiosk.html` |
+| 2 | Shared booth data pool — SQLite with WebSocket broadcast across all centers | Node.js backend |
+| 3 | Matching — entity resolution across open cases, handover gate | Node.js backend |
+| 4 | **Long-missing alerting** — vulnerability SLA + LLM escalation | `findflow/` Python engine |
+| 5 | **Predictive alarm** — hotspot risk surface + volunteer pre-positioning | `findflow/` Python engine |
+
+The Python engine runs as a FastAPI sidecar (`port 8001`) that the Node.js backend calls after every new report.
 
 ---
 
 ## Architecture
 
 ```
-DETERMINISTIC FLOOR (always runs, reproducible, ~0ms)
-   #4 vulnerability-SLA timers   #5 structural risk surface
-                    │
-                    ▼
-LLM REASONING LAYER (Anthropic Claude / DeepSeek V4 / vLLM / OpenRouter)
-   raises urgency on context · narrates alarms · can only ADD, never suppress
-                    │
-                    ▼  unavailable → falls back to the floor (still safe)
-              Signal JSON  (one fixed schema for all outputs)
+Kiosk (browser)
+  └─ ElevenLabs voice agent  ←→  operator speaks, agent collects details
+       ├─ capture_missing_person_photo  (camera Flow A)
+       ├─ capture_self_photo            (camera Flow B)
+       └─ submit_report
+             │
+             ▼
+      Node.js / Express  (port 3001)
+        ├─ db.save()          → SQLite
+        ├─ findMatches()      → entity resolution across open cases
+        └─ POST /triage  ──► Python FastAPI sidecar  (port 8001)
+                                  ├─ POST /triage      → #4 alert Signal
+                                  └─ POST /zones/risk  → #5 prediction Signal
+                                        │
+                                 deterministic SLA floor
+                                        │
+                                 LLM reasoning layer (Claude / DeepSeek / floor-only)
+                                        │
+                                  Signal JSON  ──► WebSocket broadcast to all booths
 ```
 
-**Safety invariant:** `severity = max(floor_tier, llm_tier)` — the LLM can never
-lower urgency below what the deterministic rules already decided.
-
-**LLM value-add:** The primary case is the *mislabel* problem — 416 of 2,500
-historic cases have `age_band=18-40` but a description that says "child, crying".
-The SLA floor under-triages these; the LLM layer, seeing the preprocessing warning,
-correctly escalates.
+**Safety invariant:** `severity = max(floor_tier, llm_tier)` — the LLM can only raise urgency, never lower it. If the LLM is down, the deterministic floor still emits valid Signal JSON.
 
 ---
 
-## Input schema
+## Kiosk (Feature #1)
 
-### #4 — Case triage (`reasoning.triage`)
+A fullscreen single-page app served from `frontend/kiosk.html`. No build step — open in Chrome over `localhost`.
 
-Raw case rows come from `data/missing_persons.csv` or live booth intake. They are
-validated in `findflow/preprocess.py` before reaching the LLM.
+**Two camera flows built in:**
+- **Flow A** — Operator reporting a missing person: agent asks if they have a photo → `capture_missing_person_photo` tool fires → camera overlay opens, 3-2-1 countdown, JPEG captured and stored in report payload
+- **Flow B** — Lost person at the booth: `capture_self_photo` fires automatically → mirrored selfie preview, photo attached to record for identification
 
-```python
-# schema.TriageInput  (what the LLM sees — already validated)
-case_id:             str
-age_band:            "0-12" | "13-17" | "18-40" | "41-60" | "61-70" | "71-80" | "80+"
-                     → "unknown" if out-of-vocabulary (with a warning)
-mins_open:           float   # minutes since reported; 0 if unknown
-last_seen_location:  str     # free-text location from the case
-high_risk_ctx:       bool    # ghat / Shahi Snan / surge context
-has_phone:           bool    # guardian has a reachable mobile
-language:            str     # volunteer routing
-status:              str     # Pending | Unresolved | Transferred | open
-physical_description:str
-warnings:            list[str]  # deterministic preprocessing flags
+**To run the kiosk:**
+```bash
+py -m http.server 8080 --directory frontend
+# open http://localhost:8080/kiosk.html in Chrome
 ```
 
-**Preprocessing rules** (all issues become warnings, never crashes):
+**ElevenLabs agent setup** — the agent (`agent_1101kw43fhmafg7s5n8554ctygc9`) needs three **Client Tools** registered on the ElevenLabs dashboard:
 
-| Problem | Behaviour |
-|---------|-----------|
-| `age_band` out of vocabulary | → `"unknown"` + warning |
-| `mins_open` negative | → clamped to 0 + warning |
-| `mins_open` missing | → derived from `resolution_hours`; else 0 + warning |
-| description says "child" but `age_band` is adult | warning (LLM must weigh; floor unchanged) |
-| `status` not canonical | warning |
-
-### #5 — Zone alarm (`reasoning.alarm_signal`)
-
-```python
-zone_name:    str           # e.g. "Zone 30 (Ramkund cluster)"
-risk_score:   float 0–1    # from hotspot.build_risk_surface()
-live_signals: dict          # optional runtime context:
-                            #   hour: int 0-23
-                            #   shahi_snan: bool
-                            #   open_cases_last_hr: int
-                            #   crowd_density: "low"|"moderate"|"high"|"very high"
-```
-
-**Risk score formula:**
-```
-base_risk = norm( 0.45 × choke_pressure
-                + 0.35 × resp_eta_norm
-                + 0.20 × cam_gap )
-
-shift_risk = base_risk × time_multiplier(hour, shahi_snan)
-```
-`time_multiplier`: dawn 5–8am ×1.4–1.9, aarti 18–21 ×1.4–1.8, Shahi Snan day ×2.1.
+| Tool name | Trigger | Parameters |
+|-----------|---------|------------|
+| `capture_missing_person_photo` | User confirms they have a photo | none |
+| `capture_self_photo` | User says they are lost | none |
+| `submit_report` | All details collected | name, gender, age_band, language, physical_description, last_seen_location, reporter_mobile |
 
 ---
 
-## Output schema
+## Python Engine (Features #4 and #5)
 
-**Every output — whether an alert or a prediction — is one fixed `Signal` JSON:**
+```
+findflow/
+  config.py       paths, crowd constants, LLM endpoint selection
+  schema.py       TriageInput + Signal dataclasses
+  preprocess.py   raw row → TriageInput (validates, never raises)
+  alerting.py     #4 deterministic SLA floor
+  reasoning.py    LLM layer — triage() and alarm_signal()
+  hotspot.py      #5 risk surface + volunteer allocation
+  api.py          FastAPI sidecar — exposes /triage and /zones/risk
+  data.py         CSV loaders for all datasets
+```
+
+**Install and run:**
+```bash
+pip install -r requirements.txt
+
+# Start the FastAPI sidecar (Node.js backend calls this)
+uvicorn findflow.api:app --port 8001
+
+# Offline test — deterministic floor + mock LLM, no API key needed
+py tests/test_pipeline.py          # 9/9 tests
+py scripts/run_mock_triage.py      # 6 hand-crafted cases + zone alarm
+```
+
+**LLM backend selection** (in `.env`):
+```bash
+# Option A — Anthropic Claude (default)
+ANTHROPIC_API_KEY=sk-...
+
+# Option B — DeepSeek / OpenRouter / any OpenAI-compatible endpoint
+LLM_BASE_URL=https://api.deepseek.com/v1
+LLM_API_KEY=...
+LLM_MODEL=deepseek-chat
+```
+Without any key the deterministic floor runs and emits valid Signal JSON.
+
+---
+
+## Signal schema
+
+Every output from the Python engine — alert or prediction — is one fixed JSON shape:
 
 ```jsonc
 {
   "type":        "alert" | "prediction",
   "ref":         "<case_id or zone name>",
   "severity":    "OK" | "WARN" | "ESCALATE" | "CRITICAL",
-  "description": "<line 1: the situation>\n<line 2: the recommended response>",
-  "actions":     ["concrete action 1", "action 2", "..."],
-  "confidence":  0.0,           // float 0–1 from the reasoning layer
-  "min_tier":    "ESCALATE",    // deterministic SLA floor (alerts only; null for predictions)
-  "raised":      true,          // did LLM lift severity above min_tier?
+  "description": "<situation>\n<recommended response>",
+  "actions":     ["action 1", "action 2"],
+  "confidence":  0.85,
+  "min_tier":    "ESCALATE",   // SLA floor (alerts only; null for predictions)
+  "raised":      true,         // did LLM lift above the floor?
   "model":       "claude-opus-4-8",
-  "warnings":    ["preprocessing warning 1", "..."]
+  "warnings":    ["preprocessing flags"]
 }
 ```
 
-**`description` is always exactly two lines** (`\n`-separated). Downstream systems
-(dispatch API, PA controller, dashboard) can consume this without parsing.
+---
 
-**`severity` bands for #5 predictions:**
+## Node.js integration
 
-| risk_score | severity |
-|------------|----------|
-| < 0.30 | OK |
-| 0.30–0.59 | WARN |
-| 0.60–0.79 | ESCALATE |
-| ≥ 0.80 | CRITICAL |
+The Node.js backend calls the Python sidecar in two places. Full diff is in `docs/integration.md`.
+
+**After `db.save()` in `POST /api/reports`:**
+```js
+if (saved.report_type === "missing") {
+  const resp = await fetch("http://localhost:8001/triage", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(saved),
+    signal: AbortSignal.timeout(5000),
+  });
+  if (resp.ok) triageSignal = await resp.json();
+}
+```
+
+**New proxy endpoint `GET /api/zones/risk`:**
+```js
+app.post("/api/zones/risk", asyncHandler(async (req, res) => {
+  const resp = await fetch("http://localhost:8001/zones/risk", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ hour: req.body.hour ?? null, shahi_snan: req.body.shahi_snan ?? false }),
+    signal: AbortSignal.timeout(10000),
+  });
+  res.json(await resp.json());
+}));
+```
+
+If the Python sidecar is down, Node.js logs a warning and continues — `triage_signal` is `null` in the response, not an error.
 
 ---
 
-## Layout
-
-```
-findflow/          importable package (core logic, no side effects)
-  config.py        paths, crowd constants, LLM endpoint selection
-  schema.py        TriageInput + Signal dataclasses; canonical vocabularies
-  preprocess.py    raw-row → TriageInput validation (never raises)
-  alerting.py      #4 deterministic SLA floor (floor_tier, classify)
-  reasoning.py     LLM layer — triage() and alarm_signal(), both return Signal
-  hotspot.py       #5 risk surface + volunteer allocation
-  prompts.py       template loader / renderer
-  prompts/         triage_system.txt  triage_user.txt
-                   alarm_system.txt   alarm_user.txt
-  geo.py           haversine + local metric projection
-  kml.py           KML point parser
-  data.py          dataset loaders
-scripts/
-  run_mock_triage.py   run all 6 hand-crafted cases + predictive alarm (offline-safe)
-  run_triage.py        live run over historic CSV
-  run_alerting.py      #4 SLA replay over 2,500 cases
-  run_hotspot.py       #5 zone risk + volunteer allocation
-tests/
-  test_pipeline.py     9 tests, all offline (LLM_MOCK=1)
-  mock_cases.py        6 hand-crafted open-status cases with expected tiers
-analysis/
-  signal_test.py       chi-square uniformity tests on the historic data
-data/                  CSV + KML datasets
-docs/SCHEMA.md         full field reference
-```
-
----
-
-## Quickstart
+## Running the full stack
 
 ```bash
-pip install -r requirements.txt
+# Terminal 1 — Node.js backend (Rohit's repo)
+cd path/to/nodejs-backend
+npm install && node server/server.js
 
-# offline — deterministic floor + mock LLM (no key needed)
-python tests/test_pipeline.py          # 9/9 tests
-python scripts/run_mock_triage.py      # 6 mock cases + zone alarm
+# Terminal 2 — Python AI sidecar
+cd path/to/Findflow
+uvicorn findflow.api:app --port 8001
 
-# live — Anthropic Claude (default)
-echo ANTHROPIC_API_KEY=<key> > .env
-python scripts/run_triage.py
-
-# live — open-source SOTA (DeepSeek V4 / vLLM / OpenRouter)
-echo LLM_BASE_URL=https://api.deepseek.com/v1 >> .env
-echo LLM_API_KEY=<deepseek-key> >> .env
-echo LLM_MODEL=deepseek-chat >> .env
-python scripts/run_triage.py
+# Terminal 3 — Kiosk frontend
+py -m http.server 8080 --directory frontend
 ```
 
-**Backend resolution order:** Anthropic → OpenAI-compatible → floor-only fallback.
-Without any key the deterministic floor still runs and emits valid `Signal` JSON.
-
----
-
+Then open `http://localhost:8080/kiosk.html`.
 
 ---
 
 ## Data
 
-See **`docs/SCHEMA.md`** for the full field reference, the risk formula, and three
-analytical caveats that shaped the design:
-- Case location/time is statistically uniform (χ² p≈0.46) — #5 uses structural signals, not learned history.
-- `is_duplicate_report` is random noise (36% twin ≈ 35% base) — not a trainable label.
-- `physical_description` contradicts `age_band` in 416/2,500 cases — the LLM reconciles; the SLA floor trusts `age_band`.
+`data/` holds five CSVs — 2,500 synthetic missing-person cases plus zone, CCTV, chokepoint, and police-station tables. See `docs/SCHEMA.md` for the full field reference.
+
+Three analytical notes that shaped the design:
+- Case locations are statistically uniform (χ² p≈0.46) — #5 uses structural signals, not learned history
+- `is_duplicate_report` is random noise — not a trainable label
+- `physical_description` contradicts `age_band` in 416 / 2,500 cases — the LLM reconciles; the SLA floor trusts `age_band`
