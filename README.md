@@ -7,13 +7,13 @@ from rotting unseen across isolated reporting centers.
 
 ## The five capabilities
 
-| # | Capability | Owner | Status |
-|---|------------|-------|--------|
-| 1 | STT + multilingual intake (structured follow-ups) | team | spec'd |
-| 2 | Shared booth data pool (one fabric, all centers) | team | spec'd |
-| 3 | Matching + verification (entity resolution, handover gate) | team | spec'd |
-| 4 | **Long-missing alerting** (vulnerability SLA + LLM escalation) | us | built |
-| 5 | **Predictive alarm** (hotspot risk + volunteer pre-positioning) | us | built |
+| # | Capability | 
+|---|------------|
+| 1 | STT + multilingual intake (structured follow-ups) |
+| 2 | Shared booth data pool (one fabric, all centers) | 
+| 3 | Matching + verification (entity resolution, handover gate) |
+| 4 | **Long-missing alerting** (vulnerability SLA + LLM escalation) |
+| 5 | **Predictive alarm** (hotspot risk + volunteer pre-positioning) |
 
 Acceptance criteria for #1–3 are in `docs/` (the team builds, we verify).
 This repo implements **#4 and #5**.
@@ -190,21 +190,6 @@ Without any key the deterministic floor still runs and emits valid `Signal` JSON
 
 ---
 
-## Testing
-
-```
-tests/test_pipeline.py  (9 tests, plain asserts — also works with pytest)
-
-  test_backend_is_mock              LLM_MOCK=1 is active
-  test_preprocess_flags_issues      warnings populated for bad data
-  test_floor_matches_expectation    SLA floor tier is correct per case
-  test_invariant_never_below_floor  severity >= min_tier always holds
-  test_final_meets_minimum          LLM raises when expected
-  test_mislabel_case_is_raised      M2 (adult band, child desc) escalated
-  test_signal_schema_is_fixed       exact field set + 2-line description
-  test_prediction_severity_from_score  risk bands map correctly
-  test_output_validation_rejects_garbage  invalid LLM JSON rejected
-```
 
 ---
 
