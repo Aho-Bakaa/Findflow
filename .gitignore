@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+findflow/mock_llm.py
+
+# Generated figures
+outputs/*.png
+
+# Secrets
+.env
+
+# OS
+Thumbs.db
+.DS_Store
