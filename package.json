@@ -1,0 +1,12 @@
+{
+  "name": "findflow",
+  "version": "0.1.0",
+  "description": "Found-First Missing Persons System for the Nashik–Trimbakeshwar Kumbh Mela",
+  "private": true,
+  "scripts": {
+    "install:server": "npm install --prefix server --omit=optional",
+    "start": "npm run start --prefix server",
+    "bench": "npm run bench --prefix server",
+    "data:gen": "python data/generate_datasets.py"
+  }
+}

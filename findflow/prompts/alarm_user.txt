@@ -1,5 +1,0 @@
-Zone: $zone_name
-Predicted lost-person risk: $risk_score / 1.0
-Live signals: $live_signals
-
-Write a two-sentence alert for the zone head: what the situation means and the single most important action to take now.

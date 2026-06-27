@@ -1,0 +1,7 @@
+station_id,name,type,lat,lng,zone,contact
+PS_001,Trimbak Police Post,post,19.96645,73.549718,ZB,+91 9353810544
+PS_002,Ramkund Beat Post,post,19.982516,73.777582,ZA,+91 9329509408
+PS_003,Nashik Central Station,station,20.023233,73.810122,ZD,+91 9276777762
+PS_004,Panchavati Post,post,20.004949,73.802265,ZE,+91 9384759615
+PS_005,South Sector Post,post,20.011326,73.796256,ZF,+91 9406284028
+PS_006,Godavari Ghat Post,post,20.00115,73.792866,ZC,+91 9941128035

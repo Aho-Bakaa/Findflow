@@ -1,0 +1,7 @@
+zone_id,zone_name,adjacent_zones,lat_center,lng_center
+ZA,Ramkund Ghat,ZB|ZC,19.9992,73.7783
+ZB,Trimbak Temple Area,ZA|ZD,19.943,73.5284
+ZC,Godavari Ghat North,ZA|ZD|ZE,20.005,73.77
+ZD,Nashik Central Mela,ZB|ZC|ZE|ZF,20.005,73.79
+ZE,Panchavati Area,ZC|ZD|ZF,20.011,73.778
+ZF,Parking Hub South,ZD|ZE,19.99,73.782

@@ -1,0 +1,22 @@
+booth_id,name,type,lat,lng,zone,capacity,is_active
+BOOTH_01,Ramkund Gate East,booth,20.006171,73.754551,ZA,1063,True
+BOOTH_02,Ramkund Gate West,booth,19.986445,73.760277,ZA,709,True
+BOOTH_03,Ramkund Main Ghat,booth,20.008035,73.797909,ZA,678,True
+BOOTH_04,Trimbak Temple North,booth,19.947525,73.504989,ZB,691,True
+BOOTH_05,Trimbak Temple South,booth,19.928932,73.528668,ZB,554,True
+BOOTH_06,Godavari Ghat Booth 1,booth,20.008062,73.780801,ZC,1936,True
+BOOTH_07,Godavari Ghat Booth 2,booth,20.007247,73.756022,ZC,1706,True
+BOOTH_08,Central Command Post,booth,19.99391,73.808465,ZD,826,True
+BOOTH_09,Nashik Road Chokepoint,booth,20.014907,73.782013,ZD,818,True
+BOOTH_10,Panchavati Booth A,booth,19.996766,73.791175,ZE,709,True
+BOOTH_11,Panchavati Booth B,booth,19.990637,73.757836,ZE,1204,True
+BOOTH_12,South Parking Booth,booth,19.995186,73.797356,ZF,1994,True
+BOOTH_13,Main Parking Entry,booth,19.987971,73.763241,ZF,1275,True
+CP_14,Ramkund Bridge,chokepoint,19.97814,73.767959,ZA,8149,True
+CP_15,Temple Road Narrows,chokepoint,19.948926,73.546485,ZB,7729,True
+CP_16,Ghat Steps East,chokepoint,19.989614,73.748478,ZC,8417,True
+CP_17,Market Lane Junction,chokepoint,19.991395,73.779469,ZD,3653,True
+CP_18,Panchavati Crossing,chokepoint,20.028766,73.796324,ZE,6113,True
+PK_19,P1 Trimbak Road,parking,19.931899,73.535184,ZB,4988,True
+PK_20,P2 Nashik Highway,parking,19.988133,73.782764,ZD,7490,True
+PK_21,P3 South Lot,parking,19.978349,73.803833,ZF,7308,True

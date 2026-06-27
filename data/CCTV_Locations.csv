@@ -1,0 +1,41 @@
+cctv_id,location_name,lat,lng,zone,coverage_radius_m
+CCTV_001,Camera at Ramkund Ghat Pt1,20.004657,73.761857,ZA,75
+CCTV_002,Camera at Trimbak Temple Area Pt2,19.941113,73.516897,ZB,75
+CCTV_003,Camera at Parking Hub South Pt3,19.981214,73.795416,ZF,50
+CCTV_004,Camera at Trimbak Temple Area Pt4,19.95909,73.543652,ZB,150
+CCTV_005,Camera at Godavari Ghat North Pt5,19.983309,73.790657,ZC,100
+CCTV_006,Camera at Trimbak Temple Area Pt6,19.950772,73.523182,ZB,150
+CCTV_007,Camera at Trimbak Temple Area Pt7,19.931244,73.515731,ZB,100
+CCTV_008,Camera at Parking Hub South Pt8,19.994229,73.801891,ZF,150
+CCTV_009,Camera at Godavari Ghat North Pt9,19.990966,73.794877,ZC,150
+CCTV_010,Camera at Ramkund Ghat Pt10,20.011989,73.796355,ZA,75
+CCTV_011,Camera at Parking Hub South Pt11,19.972999,73.791024,ZF,50
+CCTV_012,Camera at Nashik Central Mela Pt12,19.999081,73.814806,ZD,100
+CCTV_013,Camera at Panchavati Area Pt13,20.029039,73.753574,ZE,50
+CCTV_014,Camera at Parking Hub South Pt14,20.009239,73.794544,ZF,100
+CCTV_015,Camera at Ramkund Ghat Pt15,19.988875,73.761208,ZA,50
+CCTV_016,Camera at Parking Hub South Pt16,20.008793,73.770169,ZF,75
+CCTV_017,Camera at Panchavati Area Pt17,20.031631,73.796526,ZE,100
+CCTV_018,Camera at Parking Hub South Pt18,19.990383,73.766946,ZF,100
+CCTV_019,Camera at Trimbak Temple Area Pt19,19.944969,73.542331,ZB,50
+CCTV_020,Camera at Panchavati Area Pt20,20.002208,73.753974,ZE,100
+CCTV_021,Camera at Godavari Ghat North Pt21,19.991973,73.757044,ZC,50
+CCTV_022,Camera at Ramkund Ghat Pt22,20.010795,73.794101,ZA,75
+CCTV_023,Camera at Trimbak Temple Area Pt23,19.950988,73.550742,ZB,75
+CCTV_024,Camera at Godavari Ghat North Pt24,20.006384,73.77533,ZC,75
+CCTV_025,Camera at Panchavati Area Pt25,20.023763,73.787493,ZE,100
+CCTV_026,Camera at Nashik Central Mela Pt26,20.029757,73.797494,ZD,150
+CCTV_027,Camera at Panchavati Area Pt27,20.008574,73.765395,ZE,50
+CCTV_028,Camera at Godavari Ghat North Pt28,19.981052,73.772696,ZC,75
+CCTV_029,Camera at Ramkund Ghat Pt29,19.97775,73.784855,ZA,75
+CCTV_030,Camera at Ramkund Ghat Pt30,20.019471,73.796282,ZA,50
+CCTV_031,Camera at Panchavati Area Pt31,19.9979,73.786449,ZE,75
+CCTV_032,Camera at Panchavati Area Pt32,19.992616,73.799776,ZE,150
+CCTV_033,Camera at Trimbak Temple Area Pt33,19.957231,73.543775,ZB,75
+CCTV_034,Camera at Ramkund Ghat Pt34,19.979047,73.774853,ZA,150
+CCTV_035,Camera at Nashik Central Mela Pt35,20.003351,73.801454,ZD,50
+CCTV_036,Camera at Ramkund Ghat Pt36,19.994331,73.770265,ZA,50
+CCTV_037,Camera at Trimbak Temple Area Pt37,19.92758,73.530214,ZB,75
+CCTV_038,Camera at Nashik Central Mela Pt38,19.989174,73.788131,ZD,50
+CCTV_039,Camera at Nashik Central Mela Pt39,20.020401,73.807798,ZD,50
+CCTV_040,Camera at Ramkund Ghat Pt40,20.006807,73.780329,ZA,50

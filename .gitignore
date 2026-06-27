@@ -1,16 +1,36 @@
-# Python
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+
+# Runtime data (server seeds itself from data/*.csv on first boot)
+server/reports.json
+server/reports.sqlite
+server/reports.sqlite-shm
+server/reports.sqlite-wal
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*.suo
+
+# Python (used only for data/generate_datasets.py)
 __pycache__/
-*.py[cod]
+*.pyc
 .venv/
 venv/
-findflow/mock_llm.py
-
-# Generated figures
-outputs/*.png
-
-# Secrets
-.env
-
-# OS
-Thumbs.db
-.DS_Store
